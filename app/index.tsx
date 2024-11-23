@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { InfoCard } from "@/components/info-card";
 import { SearchBox } from "@/components/searchbox";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "@/components/typography";
-import { getWeatherByCityName, GetWeatherByCityNameResponse } from "@/api";
+import {
+  getWeatherByCityName,
+  GetWeatherByCityNameResponse,
+  getWeatherByCurrentLocation,
+} from "@/api";
+import { verifyIfHasLocationPermission } from "@/utils/verify-location-permission";
+import { getCurrentLocation } from "@/utils/get-current-location";
 
 export default function Index() {
   const { bottom, top } = useSafeAreaInsets();
@@ -24,6 +30,34 @@ export default function Index() {
       console.log({ error });
     }
   };
+
+  const getDataByCurrentLocation = async () => {
+    const hasPermission = await verifyIfHasLocationPermission();
+
+    if (!hasPermission) {
+      return;
+    }
+
+    const currentLocation = await getCurrentLocation();
+
+    if (!currentLocation) {
+      return;
+    }
+
+    try {
+      const weatherByCurrentLocation = await getWeatherByCurrentLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      });
+      setWeatherData(weatherByCurrentLocation);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useLayoutEffect(() => {
+    getDataByCurrentLocation();
+  }, []);
 
   return (
     <LinearGradient

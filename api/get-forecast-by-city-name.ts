@@ -14,6 +14,10 @@ export interface GetWeatherByCityNameResponse {
     speed: number;
     deg: number;
   };
+  sys: {
+    country: string;
+  };
+  name: string;
 }
 
 export async function getWeatherByCityName(

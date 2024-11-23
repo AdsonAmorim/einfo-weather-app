@@ -8,16 +8,14 @@ interface SearchBoxProps {
 }
 
 export function SearchBox({ getData }: SearchBoxProps) {
-  const [searchText, setSearchText] = useState(""); // Estado para controlar o valor do input
-  const inputRef = useRef<TextInput>(null); // Referência ao TextInput
-  const debouncedValue = useDebounce<string>(searchText); // Valor com debounce para evitar chamadas contínuas
+  const [searchText, setSearchText] = useState("");
+  const inputRef = useRef<TextInput>(null);
+  const debouncedValue = useDebounce<string>(searchText);
 
-  // Atualiza os dados com o valor debounced
   useEffect(() => {
     getData(debouncedValue);
   }, [debouncedValue]);
 
-  // Função para tratar alterações no texto
   const onChangeText = (value: string) => {
     setSearchText(value);
   };
@@ -37,27 +35,27 @@ export function SearchBox({ getData }: SearchBoxProps) {
     >
       <TextInput
         style={{
-          flex: 1, // O input ocupa o máximo de espaço possível
+          flex: 1,
           padding: 8,
           color: "#FFF",
           fontSize: 18,
         }}
         placeholder="Busque uma cidade"
-        value={searchText} // Controlado pelo estado
+        value={searchText}
         ref={inputRef}
         textAlign="left"
         returnKeyType="search"
         placeholderTextColor="#FFF"
-        onChangeText={onChangeText} // Atualiza o estado com o valor digitado
-        // onSubmitEditing={(data) => {
-        //   getData(data.nativeEvent.text); // Busca com o texto final
-        // }}
+        onChangeText={onChangeText}
+        onSubmitEditing={(data) => {
+          getData(data.nativeEvent.text);
+        }}
       />
       {searchText === "" ? (
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            inputRef.current?.focus(); // Foca no input
+            inputRef.current?.focus();
           }}
         >
           <Ionicons name="search" size={24} color="#FFF" />
@@ -66,8 +64,8 @@ export function SearchBox({ getData }: SearchBoxProps) {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            setSearchText(""); // Limpa o texto
-            getData(""); // Reseta os dados buscados
+            setSearchText("");
+            getData("");
           }}
         >
           <Ionicons name="close" size={24} color="#FFF" />

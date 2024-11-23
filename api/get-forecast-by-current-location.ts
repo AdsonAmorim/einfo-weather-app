@@ -1,17 +1,35 @@
-import { WeatherData } from "@/types/weather";
 import { api } from "./config";
 
-interface GetForecastByCurrentLocation {
+interface GetWeatherByCurrentLocation {
   latitude: number;
   longitude: number;
-  interval: number;
 }
 
-export async function getForecastByCurrentLocation({
+export interface GetWeatherByCurrentLocationResponse {
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+  }[];
+  main: {
+    temp: number; // in celsius
+    humidity: number;
+  };
+  wind: {
+    speed: number;
+    deg: number;
+  };
+  sys: {
+    country: string;
+  };
+  name: string;
+}
+
+export async function getWeatherByCurrentLocation({
   latitude,
   longitude,
-}: GetForecastByCurrentLocation): Promise<WeatherData[]> {
+}: GetWeatherByCurrentLocation): Promise<GetWeatherByCurrentLocationResponse> {
   return await api.get(
-    `/forecast?cnt=1&units=metric&lat=${latitude}&lon=${longitude}}`
+    `/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}`
   );
 }

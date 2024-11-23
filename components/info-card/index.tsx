@@ -8,7 +8,7 @@ import { convertMetersPerSecondToKmPerHour } from "@/utils/convert-meters-per-se
 
 interface InfoCardProps extends GetWeatherByCityNameResponse {}
 
-export function InfoCard({ main, weather, wind }: InfoCardProps) {
+export function InfoCard({ main, weather, wind, name, sys }: InfoCardProps) {
   const currentDate = new Date().toLocaleDateString("pt-br", {
     month: "long",
     day: "2-digit",
@@ -33,6 +33,9 @@ export function InfoCard({ main, weather, wind }: InfoCardProps) {
         />
       </View>
       <BlurView intensity={50} style={styles.blurCard}>
+        <Typography style={styles.date}>
+          {name} - {sys.country}
+        </Typography>
         <Typography style={styles.date}>Hoje, {currentDate}</Typography>
         <Typography style={styles.temperature}>~ {main.temp} °C</Typography>
         <Typography style={styles.condition}>
