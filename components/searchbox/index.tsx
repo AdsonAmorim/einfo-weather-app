@@ -8,16 +8,18 @@ interface SearchBoxProps {
 }
 
 export function SearchBox({ getData }: SearchBoxProps) {
-  const [searchText, setSearchText] = useState("");
-  const inputRef = useRef<TextInput>(null);
-  const debouncedValue = useDebounce<string>(searchText);
+  const [searchText, setSearchText] = useState(""); // Estado para controlar o valor do input
+  const inputRef = useRef<TextInput>(null); // Referência ao TextInput
+  const debouncedValue = useDebounce<string>(searchText); // Valor com debounce para evitar chamadas contínuas
 
+  // Atualiza os dados com o valor debounced
   useEffect(() => {
     getData(debouncedValue);
   }, [debouncedValue]);
 
+  // Função para tratar alterações no texto
   const onChangeText = (value: string) => {
-    setSearchText(value ?? "");
+    setSearchText(value);
   };
 
   return (
@@ -27,51 +29,47 @@ export function SearchBox({ getData }: SearchBoxProps) {
         alignItems: "center",
         justifyContent: "space-between",
         borderRadius: 8,
-        alignSelf: "flex-start",
         maxHeight: 42,
         borderColor: "#FFF",
         borderWidth: 1,
-        paddingInline: 8,
+        paddingHorizontal: 8,
       }}
     >
       <TextInput
         style={{
-          flex: 1,
+          flex: 1, // O input ocupa o máximo de espaço possível
           padding: 8,
-          color: "#fff",
+          color: "#FFF",
           fontSize: 18,
-          borderRadius: 8,
         }}
         placeholder="Busque uma cidade"
-        value={searchText}
+        value={searchText} // Controlado pelo estado
         ref={inputRef}
-        textAlign="center"
+        textAlign="left"
         returnKeyType="search"
-        placeholderTextColor="#fFF"
-        onChangeText={onChangeText}
-        onSubmitEditing={(data) => {
-          getData(data.nativeEvent.text);
-        }}
+        placeholderTextColor="#FFF"
+        onChangeText={onChangeText} // Atualiza o estado com o valor digitado
+        // onSubmitEditing={(data) => {
+        //   getData(data.nativeEvent.text); // Busca com o texto final
+        // }}
       />
       {searchText === "" ? (
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            inputRef.current?.focus();
+            inputRef.current?.focus(); // Foca no input
           }}
         >
-          {/* <Icon as={Ionicons} size="md" name="search" color="light.text" /> */}
           <Ionicons name="search" size={24} color="#FFF" />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            setSearchText("");
-            getData("");
+            setSearchText(""); // Limpa o texto
+            getData(""); // Reseta os dados buscados
           }}
         >
-          {/* <Icon as={Ionicons} size="md" name="close" color="light.text" /> */}
           <Ionicons name="close" size={24} color="#FFF" />
         </TouchableOpacity>
       )}

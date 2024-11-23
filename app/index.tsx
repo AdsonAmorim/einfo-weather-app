@@ -1,15 +1,29 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { InfoCard } from "@/components/info-card";
 import { SearchBox } from "@/components/searchbox";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "@/components/typography";
+import { getWeatherByCityName, GetWeatherByCityNameResponse } from "@/api";
 
 export default function Index() {
   const { bottom, top } = useSafeAreaInsets();
+  const [weatherData, setWeatherData] =
+    useState<GetWeatherByCityNameResponse | null>(null);
 
-  const getData = useCallback(() => {}, []);
+  const getData = async (value: string) => {
+    if (!value) {
+      return;
+    }
+
+    try {
+      const response = await getWeatherByCityName(value);
+      setWeatherData(response);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   return (
     <LinearGradient
@@ -30,7 +44,7 @@ export default function Index() {
       >
         <SearchBox getData={getData} />
 
-        <InfoCard />
+        {weatherData && <InfoCard {...weatherData} />}
 
         <View
           style={{ width: "100%", alignItems: "center", paddingBottom: 16 }}

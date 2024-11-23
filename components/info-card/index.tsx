@@ -1,10 +1,19 @@
 import React from "react";
 import { BlurView } from "expo-blur";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Typography } from "../typography";
 import SunnySvg from "@/assets/images/weather/rain.svg";
+import { GetWeatherByCityNameResponse } from "@/api";
+import { convertMetersPerSecondToKmPerHour } from "@/utils/convert-meters-per-second-in-km-per-hr";
 
-export function InfoCard() {
+interface InfoCardProps extends GetWeatherByCityNameResponse {}
+
+export function InfoCard({ main, weather, wind }: InfoCardProps) {
+  const currentDate = new Date().toLocaleDateString("pt-br", {
+    month: "long",
+    day: "2-digit",
+  });
+
   return (
     <>
       <View style={{ position: "relative" }}>
@@ -24,12 +33,19 @@ export function InfoCard() {
         />
       </View>
       <BlurView intensity={50} style={styles.blurCard}>
-        <Typography style={styles.date}>Today, 12 September</Typography>
-        <Typography style={styles.temperature}>29°C</Typography>
-        <Typography style={styles.condition}>Cloudy</Typography>
+        <Typography style={styles.date}>Hoje, {currentDate}</Typography>
+        <Typography style={styles.temperature}>~ {main.temp} °C</Typography>
+        <Typography style={styles.condition}>
+          {weather[0].description}
+        </Typography>
         <View style={styles.details}>
-          <Typography style={styles.detailText}>Wind | 10 km/h</Typography>
-          <Typography style={styles.detailText}>Hum | 54%</Typography>
+          <Typography style={styles.detailText}>
+            Ventos | {convertMetersPerSecondToKmPerHour(Number(wind.speed))}{" "}
+            km/h
+          </Typography>
+          <Typography style={styles.detailText}>
+            Umidade | {main.humidity}%
+          </Typography>
         </View>
       </BlurView>
     </>
